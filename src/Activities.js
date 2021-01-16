@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles, Typography } from "@material-ui/core";
 import { boxStyles } from "./cssObjects";
 
@@ -7,7 +7,6 @@ const useStyles = makeStyles(boxStyles);
 function Activities() {
   const classes = useStyles();
   // eslint-disable-next-line
-  const scrollRef = useRef(null);
   const [activities, setActivities] = useState([]);
   const [base, setBase] = useState(80);
   const [page, setPage] = useState(3);
@@ -18,13 +17,6 @@ function Activities() {
       .then((data) => {
         setActivities([...activities, ...data]);
       });
-
-    const div = scrollRef.current;
-    div.addEventListener("scroll", handleInfiniteScroll);
-
-    return () => {
-      div.removeEventListener("scroll", handleInfiniteScroll);
-    };
   }, []);
 
   const handleInfiniteScroll = () => {
@@ -57,7 +49,12 @@ function Activities() {
   console.log(activities);
 
   return (
-    <div ref={scrollRef} id="activityBox" className={classes.box} m="2">
+    <div
+      onScroll={() => handleInfiniteScroll()}
+      id="activityBox"
+      className={classes.box}
+      m="2"
+    >
       {activities.length > 0 ? (
         <>
           {activities.map((obj, index) => (
